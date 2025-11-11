@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken');
-const { promisify } = require('util');
 
 const isAuthenticated = async (req, res, next) => {
     const authHeader = req.headers.authorization;
@@ -11,7 +10,7 @@ const isAuthenticated = async (req, res, next) => {
     const [, token] = authHeader.split(' ');
 
     try {
-        const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
         req.userId = decoded.idUser;
         req.userRole = decoded.role; 
@@ -22,7 +21,6 @@ const isAuthenticated = async (req, res, next) => {
     }
 };
 
-
 const isAdmin = (req, res, next) => {
     if (req.userRole !== 'admin') {
         return res.status(403).json({ 
@@ -32,7 +30,7 @@ const isAdmin = (req, res, next) => {
     return next();
 };
 
-module.exports = { 
+module.exports = {
     isAuthenticated,
     isAdmin
 };

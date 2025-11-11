@@ -2,9 +2,8 @@ const { Ticket, User } = require('../config/database');
 
 class AdminService {
 
-async findAllTickets(userId) {
+async findAllTickets() {
   return await Ticket.findAll({
-    where: { idUser: userId },
     include: {
       model: User,
       as: 'user',

@@ -6,9 +6,10 @@ const upload = require('../config/uploadConfig');
 const router = Router();
 const ticketController = new TicketController();
 
-router.get('/tickets', isAuthenticated, ticketController.findAllTickets());
-router.get('/tickets/:idTicket', isAuthenticated, ticketController.findTicketById());
-router.put('/tickets/:idTicket', isAuthenticated, ticketController.updateTicket());
-router.delete('/tickets/:idTicket', isAuthenticated, ticketController.deleteTicket());
+router.get('/tickets', isAuthenticated, ticketController.findAllTickets);
+router.get('/tickets/:idTicket', isAuthenticated, ticketController.findTicketByPk);
+router.post('/tickets', isAuthenticated, upload.single('image'), ticketController.createTicket);
+router.put('/tickets/:idTicket', isAuthenticated, ticketController.updateTicket);
+router.delete('/tickets/:idTicket', isAuthenticated, ticketController.deleteTicket);
 
 module.exports = router;

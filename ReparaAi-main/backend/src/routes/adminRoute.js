@@ -6,7 +6,7 @@ const adminRouter = express.Router();
 const adminController = new AdminController();
 
 adminRouter.use(isAuthenticated, isAdmin);
-adminRouter.get('/admin/tickets', adminController.getAllTickets());
-adminRouter.put('/admin/tickets/:idTicket', adminController.updateTicket());
+adminRouter.get('/admin/tickets', adminController.findAllTickets);
+adminRouter.put('/admin/tickets/:idTicket', adminController.updateTicket);
 
 module.exports = adminRouter;

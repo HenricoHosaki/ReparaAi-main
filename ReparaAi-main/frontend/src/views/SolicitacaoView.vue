@@ -140,9 +140,10 @@ function removeImage() {
 // Envio do formulário com FormData
 async function createTicket() {
   try {
+    const token = localStorage.getItem('token') // ou sessionStorage, conforme o login
+
     let response
 
-    // Caso 1: sem imagem → envia JSON normal
     if (!imageFile.value) {
       const dataToSend = {
         header: ticketData.value.header,
@@ -150,10 +151,12 @@ async function createTicket() {
         localization: `${markerPosition.value.lat},${markerPosition.value.lng}`
       }
 
-      response = await api.post('/tickets', dataToSend)
-
+      response = await api.post('/tickets', dataToSend, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
     } else {
-      // Caso 2: com imagem → envia FormData
       const dataToSend = new FormData()
       dataToSend.append('header', ticketData.value.header)
       dataToSend.append('description', ticketData.value.description)
@@ -161,15 +164,17 @@ async function createTicket() {
       dataToSend.append('image', imageFile.value)
 
       response = await api.post('/tickets', dataToSend, {
-        headers: { 'Content-Type': 'multipart/form-data' }
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
       })
     }
 
-    // Sucesso 🎉
     toast.success('Solicitação enviada com sucesso!')
     console.log('Ticket criado:', response.data)
 
-    // Limpa os campos
+    // limpa os campos
     ticketData.value.header = ''
     ticketData.value.description = ''
     imageFile.value = null
@@ -178,7 +183,7 @@ async function createTicket() {
 
   } catch (error) {
     console.error('Erro ao criar a solicitação:', error)
-    const errorMessage = error.response?.data?.message
+    const errorMessage = error.response?.data?.message || 'Não foi possível enviar a solicitação.'
     toast.error(errorMessage)
   }
 }
